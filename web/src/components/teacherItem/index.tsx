@@ -1,39 +1,52 @@
 import React from 'react';
 
 import whatsappSource from '../../assets/images/icons/whatsapp.svg';
+import api from '../../services/api';
 
 import './styles.css';
 
-const TeacherItem: React.FC = () => {
+interface TeacherItemProps {
+  teacher: {
+    avatar: string;
+    bio: string;
+    cost: number;
+    id: number;
+    name: string;
+    subject: string;
+    whatsapp: string;
+  };
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+  const createConnection = () => {
+    api.post('/connections', {
+      user_id: teacher.id,
+    });
+  };
+
   return (
     <article className='teacher-item'>
       <header>
-        <img
-          src='https://avatars2.githubusercontent.com/u/2254731?s=400&u=0ba16a79456c2f250e7579cb388fa18c5c2d7d65&v=4'
-          alt='Diego Fernandes'
-        />
+        <img src={teacher.avatar} alt={teacher.name} />
         <div>
-          <strong>Diogo Fernandes</strong>
-          <span>Quimica</span>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
         </div>
       </header>
-      <p>
-        Aulas de Matemática bem estruturadas e expositiva.
-        <br /> <br />
-        Estude para o ENEM e Vestibulares no Melhor Cursinho com o Melhor Preço.
-        Pague em até 12x. ENEM com a melhor preparação. Parcelas por menos de R$
-        15 reais.
-      </p>
-
+      <p>{teacher.bio}</p>
       <footer>
         <p>
           Preço/hora
-          <strong>R$ 15,00</strong>
+          <strong>{teacher.cost} €</strong>
         </p>
-        <button type='button'>
+        <a
+          target='_blank'
+          onClick={createConnection}
+          href={`https://wa.me/${teacher.whatsapp}?text=`}
+        >
           <img src={whatsappSource} alt='Whatsapp' />
           Entrar em Contato
-        </button>
+        </a>
       </footer>
     </article>
   );
