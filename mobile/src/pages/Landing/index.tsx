@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, Text } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 
@@ -7,10 +7,13 @@ import giveClassesSource from '../../../assets/images/icons/give-classes.png';
 import heartSource from '../../../assets/images/icons/heart.png';
 import studySource from '../../../assets/images/icons/study.png';
 import landingSource from '../../../assets/images/landing.png';
+import api from '../../services/api';
 import styles from './styles';
 
 const Landing: React.FC = () => {
   const { navigate } = useNavigation();
+
+  const [totalConnection, setTotalConnections] = useState(0);
 
   function handleNavigateToGiveClassesPage() {
     navigate('GiveClasses');
@@ -19,6 +22,14 @@ const Landing: React.FC = () => {
   function handleNavigateToStudyPages() {
     navigate('Study');
   }
+
+  useEffect(() => {
+    api.get('connections').then(response => {
+      const { total } = response.data;
+
+      setTotalConnections(total);
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -44,7 +55,8 @@ const Landing: React.FC = () => {
         </RectButton>
       </View>
       <Text style={styles.totalConnections}>
-        Total de 285 ligações já realizadas. <Image source={heartSource} />
+        Total de {totalConnection} ligações já realizadas.{' '}
+        <Image source={heartSource} />
       </Text>
     </View>
   );
